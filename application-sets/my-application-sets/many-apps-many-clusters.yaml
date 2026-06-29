@@ -12,12 +12,12 @@ spec:
               repoURL: https://github.com/denis-lazar/gitops-cert-level-2-examples.git
               revision: HEAD
               directories:
-                - path: application-sets/example-apps/*
+                - path: ./application-sets/example-apps/*
           # cluster generator, 'child' #2
           - clusters: {}
-              template:
-                spec:
-                  project: default
+            template:
+              spec:
+                project: default
   template:
     metadata:
       name: '{{path.basename}}-{{name}}'
@@ -30,3 +30,10 @@ spec:
       destination:
         server: '{{server}}'
         namespace: '{{path.basename}}'
+        
+      syncPolicy:
+        syncOptions:
+          - CreateNamespace=true  
+        automated: # automated sync by default retries failed attempts 5 times with following delays between attempts ( 5s, 10s, 20s, 40s, 80s ); retry controlled using `retry` field.
+          prune: true # Specifies if resources should be pruned during auto-syncing ( false by default ).
+          selfHeal: true
